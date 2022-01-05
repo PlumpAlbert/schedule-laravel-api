@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -58,19 +60,24 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'login' => 'required',
             'password' => 'required'
         ]);
-        $user = User::where('user_login', $request->login)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->user_password)) {
+        if (Auth::attempt($credentials, true)) {
+            $request->session()->regenerate();
+            $user = User::with('group')->where('login', $request->login)->first();
+            return Response([
+                'error' => false,
+                'message' => '',
+                'body' => $user,
+            ]);
+        } else {
             throw ValidationException::withMessages([
                 'login' => 'Wrong username or password'
             ]);
         }
-
-        return $user->createToken($request->login)->plainTextToken;
     }
 
     /**

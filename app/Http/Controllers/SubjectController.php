@@ -42,7 +42,16 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'audience' => 'required',
+            'type' => 'required',
+            'name' => 'required|string',
+            'time' => 'required|integer',
+            'weekday' => 'required|integer',
+            'weekType' => 'required|integer',
+            'teacher' => 'required|integer',
+        ]);
+        Subject::create($request->all());
     }
 
     /**

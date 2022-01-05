@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateSubjectsTable extends Migration
 {
     public static $tableName = "subjects";
+
     /**
      * Run the migrations.
      *

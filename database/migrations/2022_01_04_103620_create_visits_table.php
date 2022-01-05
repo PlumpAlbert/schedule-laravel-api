@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateVisitsTable extends Migration
 {
     public static $tableName = 'visits';
+
     /**
      * Run the migrations.
      *

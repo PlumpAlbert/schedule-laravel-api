@@ -23,7 +23,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('/delete', [UserController::class, 'delete']);
 });
 
-Route::group(['prefix' => 'group'], function() {
+Route::group(['prefix' => 'group'], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', [GroupController::class, 'store']);
 });

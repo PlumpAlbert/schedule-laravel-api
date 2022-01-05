@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateGroupsTable extends Migration
 {
     public static $tableName = "groups";
+
     /**
      * Run the migrations.
      *

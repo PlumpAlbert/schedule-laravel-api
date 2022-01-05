@@ -98,8 +98,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        //
+        $request->validate(['id' => 'required|integer']);
+        $data = User::where('id', $request->id)->delete();
+        return Response([
+            'error' => false,
+            'message' => 'User deleted',
+            'body' => $data
+        ]);
     }
 }

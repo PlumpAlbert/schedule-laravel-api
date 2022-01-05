@@ -7,6 +7,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $login
+ * @property string $password
+ * @property int $type
+ * @property int $group_id
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -36,7 +44,8 @@ class User extends Authenticatable
         'group_id'
     ];
 
-    public function group() {
+    public function group()
+    {
         return $this->belongsTo(Group::class, 'group_id', 'id');
     }
 }

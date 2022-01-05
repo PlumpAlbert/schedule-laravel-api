@@ -5,9 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $faculty
+ * @property string $specialty
+ * @property int $year
+ */
 class Group extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'faculty',
         'specialty',

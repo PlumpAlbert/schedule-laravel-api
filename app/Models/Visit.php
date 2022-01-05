@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $subject_id
+ * @property int $group_id
+ */
 class Visit extends Model
 {
     use HasFactory;
+
     public $timestamps = false;
 
     /**

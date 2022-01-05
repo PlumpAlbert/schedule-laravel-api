@@ -10,6 +10,6 @@ class Subject extends Model
     use HasFactory;
 
     public function teacher() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'teacher_id', 'id');
     }
 }

@@ -7,6 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+const USER_ADMIN = 2;
+const USER_TEACHER = 1;
+const USER_STUDENT = 0;
+
 /**
  * @property int $id
  * @property string $name

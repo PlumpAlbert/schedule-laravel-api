@@ -16,15 +16,15 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create(CreateUsersTable::$tableName, function (Blueprint $table) {
-            $table->id('user_id');
-            $table->string('user_name');
-            $table->string('user_login')->unique();
-            $table->string('user_password', 256);
-            $table->unsignedSmallInteger('user_type');
+            $table->id('id');
+            $table->string('name');
+            $table->string('login')->unique();
+            $table->string('password', 256);
+            $table->unsignedSmallInteger('type');
             $table->unsignedBigInteger('group_id');
             $table->rememberToken();
             $table->timestamps();
-            $table->foreign('group_id')->references('group_id')->on(CreateGroupsTable::$tableName);
+            $table->foreign('group_id')->references('id')->on(CreateGroupsTable::$tableName);
         });
     }
 

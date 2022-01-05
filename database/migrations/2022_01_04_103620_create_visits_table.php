@@ -18,8 +18,8 @@ class CreateVisitsTable extends Migration
             $table->primary(['group_id', 'subject_id']);
             $table->unsignedBigInteger('group_id');
             $table->unsignedBigInteger('subject_id');
-            $table->foreign('group_id')->references('group_id')->on(CreateGroupsTable::$tableName)->onDelete('cascade');
-            $table->foreign('subject_id')->references('subject_id')->on(CreateSubjectsTable::$tableName)->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on(CreateGroupsTable::$tableName)->onDelete('cascade');
+            $table->foreign('subject_id')->references('id')->on(CreateSubjectsTable::$tableName)->onDelete('cascade');
         });
     }
 

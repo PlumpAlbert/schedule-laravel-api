@@ -15,10 +15,10 @@ class CreateGroupsTable extends Migration
     public function up()
     {
         Schema::create(CreateGroupsTable::$tableName, function (Blueprint $table) {
-            $table->id('group_id');
-            $table->string('group_faculty');
-            $table->string('group_specialty');
-            $table->unsignedSmallInteger('group_year');
+            $table->id('id');
+            $table->string('faculty');
+            $table->string('specialty');
+            $table->unsignedSmallInteger('year');
             $table->timestamps();
         });
     }

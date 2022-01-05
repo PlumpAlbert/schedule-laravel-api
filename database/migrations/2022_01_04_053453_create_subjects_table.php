@@ -15,16 +15,16 @@ class CreateSubjectsTable extends Migration
     public function up()
     {
         Schema::create(CreateSubjectsTable::$tableName, function (Blueprint $table) {
-            $table->id('subject_id');
-            $table->string('subject_audience');
-            $table->unsignedSmallInteger('subject_type');
-            $table->string('subject_name');
-            $table->time('subject_time');
-            $table->unsignedSmallInteger('subject_weekday');
-            $table->unsignedSmallInteger('subject_weektype');
-            $table->unsignedBigInteger('subject_teacher');
+            $table->id('id');
+            $table->string('audience');
+            $table->unsignedSmallInteger('type');
+            $table->string('name');
+            $table->time('time');
+            $table->unsignedSmallInteger('weekday');
+            $table->unsignedSmallInteger('weektype');
+            $table->unsignedBigInteger('teacher_id');
             $table->timestamps();
-            $table->foreign('subject_teacher')->references('user_id')->on(CreateUsersTable::$tableName);
+            $table->foreign('teacher_id')->references('id')->on(CreateUsersTable::$tableName);
         });
     }
 

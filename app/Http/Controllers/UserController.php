@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use const App\Models\USER_ADMIN;
 
 class UserController extends Controller
 {
@@ -45,6 +47,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
         $user->refresh();
+        $user->group = Group::where('id', $user->group_id)->first();
         return Response([
             'error' => false,
             'message' => 'User successfully registered',
@@ -57,6 +60,7 @@ class UserController extends Controller
      *
      * @param Request $request
      * @return Response
+     * @throws ValidationException
      */
     public function login(Request $request)
     {
@@ -67,11 +71,20 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials, true)) {
             $request->session()->regenerate();
-            $user = User::with('group')->where('login', $request->login)->first();
+            $user = User::with('group')->where('login', $request->login)->firstOrFail();
+            $token = null;
+            if ($user->type === USER_ADMIN) {
+                $token = $user->createToken($user->login, ['admin'])->plainTextToken;
+            } else {
+                $token = $user->createToken($user->login)->plainTextToken;
+            }
             return Response([
                 'error' => false,
                 'message' => '',
-                'body' => $user,
+                'body' => [
+                    'user' => $user,
+                    'access_token' => $token
+                ],
             ]);
         } else {
             throw ValidationException::withMessages([
@@ -101,11 +114,13 @@ class UserController extends Controller
     public function delete(Request $request)
     {
         $request->validate(['id' => 'required|integer']);
-        $data = User::where('id', $request->id)->delete();
+        $rowsAffected = User::where('id', $request->id)->delete();
         return Response([
             'error' => false,
             'message' => 'User deleted',
-            'body' => $data
+            'body' => [
+                'success' => $rowsAffected === 1
+            ]
         ]);
     }
 }

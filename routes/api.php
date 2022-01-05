@@ -17,10 +17,18 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('subject', [SubjectController::class, 'index']);
 
+/* ADMIN ONLY */
+Route::middleware('is:admin')->group(function() {
+});
+
+/* AUTHENTICATED USERS ONLY */
+Route::middleware('auth:sanctum')->group(function() {
+    Route::post('/user/delete', [UserController::class, 'delete']);
+});
+
 Route::group(['prefix' => 'user'], function () {
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
-    Route::post('/delete', [UserController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'group'], function () {

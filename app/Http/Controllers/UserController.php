@@ -25,17 +25,29 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required',
-            'login' => ['required', 'unique:' . User::class . ',user_login'],
+            'login' => ['required', 'unique:users,login'],
             'password' => ['required', 'confirmed'],
-            'password_confirmation' => 'required'
+            'password_confirmation' => 'required',
+            'group' => ['required', 'integer']
         ]);
 
-        $user = User::create($request->all(['name', 'login', 'password', 'group']));
+        $user = new User;
+        $user->name = $request->name;
+        $user->login = $request->login;
+        $user->group_id = $request->group;
         $user->type = 0;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $user->refresh();
+        return Response([
+            'error' => false,
+            'message' => 'User successfuly registered',
+            'body' => $user
+        ]);
     }
 
     /**

@@ -33,14 +33,14 @@ class UserController extends Controller
             return Response([
                 'error' => false,
                 'message' => '',
-                'body' => User::where('type', USER_TEACHER)->all()
+                'body' => User::where('type', USER_TEACHER)->get()
             ]);
         }
         if ($request->type === 'admin') {
             return Response([
                 'error' => false,
                 'message' => '',
-                'body' => User::where('type', USER_ADMIN)->all()
+                'body' => User::where('type', USER_ADMIN)->get()
             ]);
         }
     }

@@ -111,7 +111,7 @@ class SubjectController extends Controller
                 return Response([
                     'error' => true,
                     'message' => 'Teacher with id "' . $request->teacher . '" does not exist'
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $subject->teacher_id = $request->teacher;

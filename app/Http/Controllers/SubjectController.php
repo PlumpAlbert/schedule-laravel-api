@@ -62,12 +62,54 @@ class SubjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request->validate(['id' => ['required', 'integer', 'exists:' . Subject::class]]);
+        $subject = Subject::with('teacher')->findOrFail($request->id);
+        $changed = false;
+        if ($request->has('audience')) {
+            $subject->audience = $request->audience;
+            $changed = true;
+        }
+        if ($request->has('name')) {
+            $subject->name = $request->name;
+            $changed = true;
+        }
+        if ($request->has('time')) {
+            $subject->time = $request->time;
+            $changed = true;
+        }
+        if ($request->has('type')) {
+            $subject->type = $request->type;
+            $changed = true;
+        }
+        if ($request->has('weekday')) {
+            $subject->weekday = $request->weekday;
+            $changed = true;
+        }
+        if ($request->has('weekType')) {
+            $subject->weektype = $request->weekType;
+            $changed = true;
+        }
+        if ($request->has('teacher')) {
+            if (!User::find($request->teacher)) {
+                return Response([
+                    'error' => true,
+                    'message' => 'Teacher with id "' . $request->teacher . '" does not exist'
+                ]);
+            }
+
+            $subject->teacher_id = $request->teacher;
+            $changed = true;
+        }
+        if ($changed) $subject->save();
+        return Response([
+            'error' => false,
+            'message' => '',
+            'body' => $subject
+        ]);
     }
 
     /**

@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('is:admin')->group(function () {
         Route::group(['prefix' => 'subject'], function () {
             Route::post('/', [SubjectController::class, 'store']);
+            Route::post('/update', [SubjectController::class, 'update']);
         });
     });
 });

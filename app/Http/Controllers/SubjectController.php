@@ -17,18 +17,11 @@ class SubjectController extends Controller
      */
     public function index(Request $request)
     {
-        $groupId = null;
+        $request->validate([
+            'group' => ['required', 'integer']
+        ]);
         if ($request->has('group')) {
             $groupId = $request->get('group');
-        } else {
-            return Response(
-                [
-                    'error' => true,
-                    'message' => 'No group provided!'
-                ],
-                Response::HTTP_BAD_REQUEST,
-                ['Content-Type' => 'application/json']
-            );
         }
         $subject = Subject::with([Group::class, Visit::class])->get()->where('group_id', $groupId);
         return $subject;

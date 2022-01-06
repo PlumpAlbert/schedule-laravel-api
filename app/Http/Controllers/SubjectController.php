@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\Subject;
+use App\Models\User;
 use App\Models\Visit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -35,16 +36,26 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'audience' => 'required',
             'type' => 'required',
             'name' => 'required|string',
-            'time' => 'required|integer',
+            'time' => 'required',
             'weekday' => 'required|integer',
             'weekType' => 'required|integer',
-            'teacher' => 'required|integer',
+            'teacher' => ['required', 'integer', 'exists:' . User::class . ',id']
         ]);
-        Subject::create($request->all());
+        $data['teacher_id'] = $data['teacher'];
+        $data['weektype'] = $data['weekType'];
+        unset($data['teacher']);
+        unset($data['weekType']);
+        $subject = Subject::create($data);
+        $subject->teacher = User::find($subject->teacher_id);
+        return Response([
+            'error' => false,
+            'message' => '',
+            'body' => $subject
+        ]);
     }
 
     /**

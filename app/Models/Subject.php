@@ -19,6 +19,16 @@ class Subject extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'audience',
+        'name',
+        'time',
+        'type',
+        'weekday',
+        'weektype',
+        'teacher_id'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

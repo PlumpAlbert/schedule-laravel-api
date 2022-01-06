@@ -132,14 +132,16 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $request->validate(['id' => ['required', 'integer', 'exists:' . User::class]]);
+        $auth = $request->user();
+        $isAdmin = $auth->tokenCan('admin');
         $user = User::with('group')->findOrFail($request->id);
         $changed = false;
         if ($request->has('group')) {
             if (!Group::find($request->group)) {
                 return Response([
                     'error' => true,
-                    'message' => '"Teacher with id "' . $request->group . '" does not exist"'
-                ]);
+                    'message' => 'Group with id "' . $request->group . '" does not exist'
+                ], Response::HTTP_BAD_REQUEST);
             }
             $user->group_id = $request->group;
             $changed = true;
@@ -148,8 +150,11 @@ class UserController extends Controller
             $user->name = $request->name;
             $changed = true;
         }
-        if ($request->has('type')) {
+        if ($isAdmin && $request->has('type')) {
             $user->type = $request->type;
+            if ($request->user()->id === $user->id) {
+                $request->user()->currentAccessToken()->delete();
+            }
             $changed = true;
         }
         if ($changed) {

@@ -94,19 +94,17 @@ class UserController extends Controller
         if (Auth::attempt($credentials, true)) {
             $request->session()->regenerate();
             $user = User::with('group')->where('login', $request->login)->firstOrFail();
-            $token = null;
+            $abilities = ['user'];
             if ($user->type === USER_ADMIN) {
-                $token = $user->createToken($user->login, ['admin'])->plainTextToken;
-            } else {
-                $token = $user->createToken($user->login)->plainTextToken;
+                $abilities[] = 'admin';
             }
             return Response([
                 'error' => false,
                 'message' => '',
                 'body' => [
                     'user' => $user,
-                    'access_token' => $token
-                ],
+                    'access_token' => $user->createToken($user->login, $abilities)->plainTextToken
+                ]
             ]);
         } else {
             throw ValidationException::withMessages([

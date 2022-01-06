@@ -24,8 +24,10 @@ class SubjectController extends Controller
         if ($request->has('group')) {
             $groupId = $request->get('group');
         }
-        $subject = Subject::with([Group::class, Visit::class])->get()->where('group_id', $groupId);
-        return $subject;
+        $visits = Visit::with('subject')->where('group_id', $groupId)->get();
+        return $visits->map(function ($visit) {
+            return $visit->subject;
+        });
     }
 
     /**

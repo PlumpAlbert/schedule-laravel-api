@@ -16,13 +16,15 @@ class CreateVisitsTable extends Migration
     public function up()
     {
         Schema::create(CreateVisitsTable::$tableName, function (Blueprint $table) {
-            $table->primary(['group_id', 'subject_id']);
+            $table->id('id');
             $table->unsignedBigInteger('group_id');
             $table->unsignedBigInteger('subject_id');
+            $table->unique(['group_id', 'subject_id']);
             $table->foreign('group_id')->references('id')->on(CreateGroupsTable::$tableName)->onDelete('cascade');
             $table->foreign('subject_id')->references('id')->on(CreateSubjectsTable::$tableName)->onDelete('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.

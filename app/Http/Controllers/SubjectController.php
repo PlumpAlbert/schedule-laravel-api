@@ -45,13 +45,18 @@ class SubjectController extends Controller
             'time' => 'required',
             'weekday' => 'required|integer',
             'weekType' => 'required|integer',
-            'teacher' => ['required', 'integer', 'exists:' . User::class . ',id']
+            'teacher' => ['required', 'integer', 'exists:' . User::class . ',id'],
+            'group' => ['integer', 'nullable', 'exists:' . Group::class . ',id']
         ]);
         $data['teacher_id'] = $data['teacher'];
         $data['weektype'] = $data['weekType'];
-        unset($data['teacher']);
-        unset($data['weekType']);
         $subject = Subject::create($data);
+        if ($request->has('group')) {
+            Visit::create([
+                'subject_id' => $subject->id,
+                'group_id' => $request->group
+            ]);
+        }
         $subject->teacher = User::find($subject->teacher_id);
         return Response([
             'error' => false,

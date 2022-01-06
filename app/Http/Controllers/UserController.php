@@ -33,14 +33,14 @@ class UserController extends Controller
             return Response([
                 'error' => false,
                 'message' => '',
-                'body' => User::where('type', USER_TEACHER)->get()
+                'body' => User::with('group')->where('type', USER_TEACHER)->get()
             ]);
         }
         if ($request->type === 'admin') {
             return Response([
                 'error' => false,
                 'message' => '',
-                'body' => User::where('type', USER_ADMIN)->get()
+                'body' => User::with('group')->where('type', USER_ADMIN)->get()
             ]);
         }
     }
@@ -123,13 +123,17 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate(['id' => ['required', 'integer']]);
-        $user = User::findOrFail($request->id);
+        $request->validate(['id' => ['required', 'integer', 'exists:' . User::class]]);
+        $user = User::with('group')->findOrFail($request->id);
         $changed = false;
         if ($request->has('group')) {
-            $group = Group::findOrFail($request->group);
+            if (!Group::find($request->group)) {
+                return Response([
+                    'error' => true,
+                    'message' => '"Teacher with id "' . $request->group . '" does not exist"'
+                ]);
+            }
             $user->group_id = $request->group;
-            $user->group = $group;
             $changed = true;
         }
         if ($request->has('name')) {
@@ -143,7 +147,11 @@ class UserController extends Controller
         if ($changed) {
             $user->save();
         }
-        return $user;
+        return Response([
+            'error' => false,
+            'message' => '',
+            'body' => $user
+        ]);
     }
 
     /**
@@ -158,7 +166,7 @@ class UserController extends Controller
         $rowsAffected = User::where('id', $request->id)->delete();
         return Response([
             'error' => false,
-            'message' => 'User deleted',
+            'message' => '',
             'body' => [
                 'success' => $rowsAffected === 1
             ]

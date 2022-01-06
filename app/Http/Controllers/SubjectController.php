@@ -115,11 +115,17 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param Request $request
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $request->validate(['id' => ['required', 'integer', 'exists:' . Subject::class . ',id']]);
+        $deletedRows = Subject::where('id', $request->id)->delete();
+        return Response([
+            'error' => false,
+            'message' => '',
+            'body' => ['success' => $deletedRows === 1]
+        ]);
     }
 }

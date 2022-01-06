@@ -8,19 +8,41 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use const App\Models\USER_ADMIN;
+use const App\Models\USER_TEACHER;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $request->validate([
+            'type' => [
+                'required',
+                Rule::in(['teacher', 'admin'])
+            ]
+        ]);
+        if ($request->type === 'teacher') {
+            return Response([
+                'error' => false,
+                'message' => '',
+                'body' => User::where('type', USER_TEACHER)->all()
+            ]);
+        }
+        if ($request->type === 'admin') {
+            return Response([
+                'error' => false,
+                'message' => '',
+                'body' => User::where('type', USER_ADMIN)->all()
+            ]);
+        }
     }
 
     /**

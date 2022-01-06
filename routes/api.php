@@ -19,9 +19,10 @@ Route::get('subject', [SubjectController::class, 'index']);
 
 
 /* AUTHENTICATED USERS ONLY */
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'is:user'])->group(function () {
     Route::post('/user/delete', [UserController::class, 'delete']);
     Route::post('/user/logout', [UserController::class, 'logout']);
+    Route::post('/user/update', [UserController::class, 'update']);
 
     /* ADMIN ONLY */
     Route::middleware('is:admin')->group(function () {

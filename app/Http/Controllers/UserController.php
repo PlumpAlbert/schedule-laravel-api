@@ -97,12 +97,31 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request->validate(['id' => ['required', 'integer']]);
+        $user = User::findOrFail($request->id);
+        $changed = false;
+        if ($request->has('group')) {
+            $group = Group::findOrFail($request->group);
+            $user->group_id = $request->group;
+            $user->group = $group;
+            $changed = true;
+        }
+        if ($request->has('name')) {
+            $user->name = $request->name;
+            $changed = true;
+        }
+        if ($request->has('type')) {
+            $user->type = $request->type;
+            $changed = true;
+        }
+        if ($changed) {
+            $user->save();
+        }
+        return $user;
     }
 
     /**

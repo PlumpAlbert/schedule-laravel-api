@@ -24,10 +24,16 @@ class SubjectController extends Controller
         if ($request->has('group')) {
             $groupId = $request->get('group');
         }
-        $visits = Visit::with('subject')->where('group_id', $groupId)->get();
-        return $visits->map(function ($visit) {
-            return $visit->subject;
-        });
+        $visits = Visit::where('visits.group_id', $groupId)->with('subject')->get();
+        return Response([
+            'error' => false,
+            'message' => '',
+            'body' => $visits->map(function ($v) {
+                $subject = $v->subject;
+                $subject->teacher = $subject->teacher()->first();
+                return $subject;
+            })
+        ]);
     }
 
     /**

@@ -21,6 +21,7 @@ Route::get('subject', [SubjectController::class, 'index']);
 /* AUTHENTICATED USERS ONLY */
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/delete', [UserController::class, 'delete']);
+    Route::post('/user/logout', [UserController::class, 'logout']);
 
     /* ADMIN ONLY */
     Route::middleware('is:admin')->group(function () {

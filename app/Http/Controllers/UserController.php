@@ -115,6 +115,16 @@ class UserController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return Response([
+            'error' => false,
+            'message' => 'User successfully logout',
+            'body' => ['success' => true]
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      *

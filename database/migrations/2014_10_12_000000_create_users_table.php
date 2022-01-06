@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('login')->unique();
             $table->string('password', 256);
             $table->unsignedSmallInteger('type');
-            $table->unsignedBigInteger('group_id');
+            $table->unsignedBigInteger('group_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('group_id')->references('id')->on(CreateGroupsTable::$tableName);

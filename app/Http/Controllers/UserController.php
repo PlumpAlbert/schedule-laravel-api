@@ -58,7 +58,7 @@ class UserController extends Controller
             'login' => ['required', 'unique:users,login'],
             'password' => ['required', 'confirmed'],
             'password_confirmation' => 'required',
-            'group' => ['required', 'integer']
+            'group' => ['integer', 'nullable']
         ]);
 
         $user = new User;

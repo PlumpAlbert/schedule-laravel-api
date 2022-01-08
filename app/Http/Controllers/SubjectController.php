@@ -11,6 +11,17 @@ use Illuminate\Http\Response;
 
 class SubjectController extends Controller
 {
+
+    private static function attendTime(Subject $subject)
+    {
+        return [
+            'id' => $subject->id,
+            'audience' => $subject->audience,
+            'time' => $subject->time,
+            'weekday' => $subject->weekday,
+            'weekType' => $subject->weektype,
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -24,15 +35,26 @@ class SubjectController extends Controller
         if ($request->has('group')) {
             $groupId = $request->get('group');
         }
-        $visits = Visit::where('visits.group_id', $groupId)->with('subject')->get();
+        $subjects = Subject::with('teacher')
+            ->whereRelation('visitedBy', 'group_id', '=', $groupId);
+        $groupedSubjects = [];
+        foreach ($subjects->lazy(200) as $subject) {
+            $composedKey = $subject->type . '~' . $subject->teacher->id . '~' . $subject->name;
+            if (array_key_exists($composedKey, $groupedSubjects)) {
+                $groupedSubjects[$composedKey]['times'][] = SubjectController::attendTime($subject);
+            } else {
+                $groupedSubjects[$composedKey] = [
+                    'type' => $subject->type,
+                    'name' => $subject->name,
+                    'teacher' => $subject->teacher,
+                    'times' => [SubjectController::attendTime($subject)]
+                ];
+            }
+        }
         return Response([
             'error' => false,
             'message' => '',
-            'body' => $visits->map(function ($v) {
-                $subject = $v->subject;
-                $subject->teacher = $subject->teacher()->first();
-                return $subject;
-            })
+            'body' => array_values($groupedSubjects)
         ]);
     }
 

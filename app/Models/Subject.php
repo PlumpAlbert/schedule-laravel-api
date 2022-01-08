@@ -44,4 +44,8 @@ class Subject extends Model
     {
         return $this->belongsTo(User::class, 'teacher_id', 'id');
     }
+
+    public function visitedBy() {
+        return $this->belongsToMany(Group::class, Visit::class, 'subject_id', 'group_id');
+    }
 }

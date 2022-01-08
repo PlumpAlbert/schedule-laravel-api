@@ -62,11 +62,29 @@ class GroupController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Request $request
      * @return Response
      */
-    public function show($id)
+    public function specialties(Request $request)
     {
+        $request->validate([
+            'faculty' => [ 'required', 'string' ]
+        ]);
+        $groups = Group::where('faculty', $request->faculty)->get();
+        $body = [];
+        $month = date("n");
+        $year = $month > 9 ? date("Y") + 1 : date("Y");
+        foreach($groups->lazy() as $group) {
+            if (!isset($body[$group->specialty])) {
+                $body[$group->specialty] = [];
+            }
+            $body[$group->specialty][$year - $group->year] = $group->id;
+        }
+        return Response([
+            'error' => false,
+            'message' => '',
+            'body' => $body
+        ]); 
     }
 
     /**

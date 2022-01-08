@@ -26,6 +26,7 @@ Route::middleware(['auth:sanctum', 'is:user'])->group(function () {
 
     /* ADMIN ONLY */
     Route::middleware('is:admin')->group(function () {
+        Route::post('/group', [GroupController::class, 'store']);
         Route::group(['prefix' => 'subject'], function () {
             Route::post('/', [SubjectController::class, 'store']);
             Route::post('/update', [SubjectController::class, 'update']);
@@ -42,5 +43,5 @@ Route::group(['prefix' => 'user'], function () {
 
 Route::group(['prefix' => 'group'], function () {
     Route::get('/', [GroupController::class, 'index']);
-    Route::post('/', [GroupController::class, 'store']);
+    Route::get('/specialty', [GroupController::class, 'specialties']);
 });

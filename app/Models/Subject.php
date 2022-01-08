@@ -21,7 +21,7 @@ class Subject extends Model
 
     protected $fillable = [
         'audience',
-        'name',
+        'title',
         'time',
         'type',
         'weekday',

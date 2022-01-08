@@ -39,13 +39,13 @@ class SubjectController extends Controller
             ->whereRelation('visitedBy', 'group_id', '=', $groupId);
         $groupedSubjects = [];
         foreach ($subjects->lazy(200) as $subject) {
-            $composedKey = $subject->type . '~' . $subject->teacher->id . '~' . $subject->name;
+            $composedKey = $subject->type . '~' . $subject->teacher->id . '~' . $subject->title;
             if (array_key_exists($composedKey, $groupedSubjects)) {
                 $groupedSubjects[$composedKey]['times'][] = SubjectController::attendTime($subject);
             } else {
                 $groupedSubjects[$composedKey] = [
                     'type' => $subject->type,
-                    'name' => $subject->name,
+                    'title' => $subject->title,
                     'teacher' => $subject->teacher,
                     'times' => [SubjectController::attendTime($subject)]
                 ];
@@ -69,7 +69,7 @@ class SubjectController extends Controller
         $data = $request->validate([
             'audience' => 'required',
             'type' => 'required',
-            'name' => 'required|string',
+            'title' => 'required|string',
             'time' => 'required',
             'weekday' => 'required|integer',
             'weekType' => 'required|integer',
@@ -108,8 +108,8 @@ class SubjectController extends Controller
             $subject->audience = $request->audience;
             $changed = true;
         }
-        if ($request->has('name')) {
-            $subject->name = $request->name;
+        if ($request->has('title')) {
+            $subject->title = $request->title;
             $changed = true;
         }
         if ($request->has('time')) {

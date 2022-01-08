@@ -19,7 +19,7 @@ class CreateSubjectsTable extends Migration
             $table->id('id');
             $table->string('audience');
             $table->unsignedSmallInteger('type');
-            $table->string('name');
+            $table->string('title');
             $table->time('time');
             $table->unsignedSmallInteger('weekday');
             $table->unsignedSmallInteger('weektype');

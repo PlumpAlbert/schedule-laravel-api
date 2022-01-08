@@ -15,24 +15,39 @@ class GroupController extends Controller
      */
     public function index(Request $request)
     {
-        $group = null;
+        $request->validate([
+            'id' => ['integer', 'exists:' . Group::class . ',id'],
+            'q' => 'string'
+        ]);
+        $body = null;
         if ($request->has('id')) {
-            $group = Group::find($request->id);
-        } else {
-            $group = Group::all();
+            $body = Group::find($request->id);
+        } else if ($request->has('q')) {
+            $query = Group::where('specialty', 'ilike', '%' . $request->q . '%');
+            $month = date("n");
+            $year = $month > 9 ? date("Y") + 1 : date("Y");
+            foreach ($query->lazy() as $group) {
+                if (!isset($body[$group->faculty])) {
+                    $body[$group->faculty] = [];
+                }
+                if (!isset($body[$group->faculty][$group->specialty])) {
+                    $body[$group->faculty][$group->specialty] = [];
+                }
+                $body[$group->faculty][$group->specialty][$year - $group->year] = $group->id;
+            }
         }
         $response = null;
         if (!$group) {
-            $response = new Response([
+            return new Response([
                 'error' => true,
                 'message' => 'Group not found',
                 'body' => null
             ], 404);
         } else {
-            $response = new Response([
+            return new Response([
                 'error' => false,
                 'message' => '',
-                'body' => $group
+                'body' => $body
             ]);
         }
         return $response;
@@ -68,13 +83,13 @@ class GroupController extends Controller
     public function specialties(Request $request)
     {
         $request->validate([
-            'faculty' => [ 'required', 'string' ]
+            'faculty' => ['required', 'string']
         ]);
         $groups = Group::where('faculty', $request->faculty)->get();
         $body = [];
         $month = date("n");
         $year = $month > 9 ? date("Y") + 1 : date("Y");
-        foreach($groups->lazy() as $group) {
+        foreach ($groups->lazy() as $group) {
             if (!isset($body[$group->specialty])) {
                 $body[$group->specialty] = [];
             }
@@ -84,7 +99,7 @@ class GroupController extends Controller
             'error' => false,
             'message' => '',
             'body' => $body
-        ]); 
+        ]);
     }
 
     /**
